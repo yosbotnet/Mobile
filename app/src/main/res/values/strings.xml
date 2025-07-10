@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">FitTracker</string>
+
+    //Login
+    <string name="password" translatable="false">Password</string>
+    <string name="login" translatable="false">Login</string>
+    <string name="username" translatable="false">Username</string>
+
+    //Fitness
+    <string name="insurance" translatable="false">Duration</string>
+    <string name="tax" translatable="false">Calories</string>
+    <string name="displacement" translatable="false">Intensity</string>
+    <string name="brand" translatable="false">Activity</string>
+    <string name="kmTot" translatable="false">Distance</string>
+    <string name="newMoto" translatable="false">New Workout</string>
+    <string name="model" translatable="false">Type</string>
+    <string name="typeMoto" translatable="false">Category</string>
+    <string name="pot" translatable="false">Level</string>
+    <string name="weight" translatable="false">Equipment</string>
+</resources>
