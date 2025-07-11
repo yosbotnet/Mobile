@@ -12,11 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.rememberPermissionState
 import edu.unibo.tracker.home.bottomBar.BottomNavigationBar
 import edu.unibo.tracker.navigation.Navigation
 import edu.unibo.tracker.ui.theme.FitTrackerTheme
+import androidx.hilt.navigation.compose.hiltViewModel
+import edu.unibo.tracker.preferences.ThemeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,16 +51,18 @@ class MainActivity : ComponentActivity() {
                 Log.e("MainActivity", "Failed to get location: ${exception.message}")
             }
         setContent {
-            FitTrackerTheme {
-                MainScreen()
-            }
+            MainScreen()
         }
     }
 }
 
 @Composable
-fun MainScreen(
-) {
+fun MainScreen(themeViewModel: ThemeViewModel = hiltViewModel()) {
     val navController = rememberNavController()
-    Navigation(navController = navController)
+    
+    FitTrackerTheme(
+        darkTheme = themeViewModel.shouldUseDarkTheme()
+    ) {
+        Navigation(navController = navController)
+    }
 }

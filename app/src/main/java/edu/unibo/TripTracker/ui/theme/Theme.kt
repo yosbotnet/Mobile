@@ -29,19 +29,25 @@ private val DarkColorPaletteProva = darkColors(
 )
 private val FitnessLightPalette = lightColors(
     primary = Color(0xFF4CAF50), // Bright Green
-    onPrimary= Color(0xFFffffff),
-    secondary = Color(0xFFFF9800), // Orange
-    onSecondary = Color(0xFFffffff),
-    background = Color(0xFFF1F8E9), // Light Green Background
-    surface = Color(0xFFE8F5E8) // Slightly Green Surface
+    onPrimary = Color(0xFFFFFFFF), // White text on green
+    secondary = Color(0xFFFF9800), // Orange accent
+    onSecondary = Color(0xFFFFFFFF), // White text on orange
+    background = Color(0xFFFFFFFF), // Pure white background
+    onBackground = Color(0xFF212121), // Dark text on light background
+    surface = Color(0xFFF5F5F5), // Light gray surface
+    onSurface = Color(0xFF212121), // Dark text on light surface
+    error = Color(0xFFD32F2F) // Red for errors
 )
 private val FitnessDarkPalette = darkColors(
-    primary = Color(0xFF81C784), // Light Green for dark mode
-    onPrimary= Color(0xFF1B5E20),
-    secondary = Color(0xFFFFB74D), // Light Orange for dark mode
-    onSecondary = Color(0xFF000000),
-    background = Color(0xFF1B5E20), // Dark Green Background
-    surface = Color(0xFF2E7D32) // Darker Green Surface
+    primary = Color(0xFF66BB6A), // Bright Green for dark mode
+    onPrimary = Color(0xFF000000), // Black text on green
+    secondary = Color(0xFFFF9800), // Orange accent
+    onSecondary = Color(0xFF000000), // Black text on orange
+    background = Color(0xFF121212), // True dark background
+    onBackground = Color(0xFFE0E0E0), // Light text on dark background
+    surface = Color(0xFF1E1E1E), // Dark surface
+    onSurface = Color(0xFFE0E0E0), // Light text on dark surface
+    error = Color(0xFFFF5252) // Red for errors
 )
 private val LightBluePalette = lightColors(
 

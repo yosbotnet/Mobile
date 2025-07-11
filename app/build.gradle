@@ -85,6 +85,8 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.1.0")
 
+    // DataStore for theme preferences
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     //Room
     def room_version = "2.6.1"
@@ -106,3 +108,4 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.0.2")
 
 }
+tasks.register("testClasses")

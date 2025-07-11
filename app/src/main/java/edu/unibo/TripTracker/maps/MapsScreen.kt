@@ -3,8 +3,11 @@ package edu.unibo.tracker.maps
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.location.Location
+import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
@@ -36,6 +39,23 @@ import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
+
+// Function to open gym website in browser
+fun openGymWebsite(context: Context, websiteUrl: String?, gymName: String?) {
+    if (websiteUrl.isNullOrBlank()) {
+        Toast.makeText(context, "Website not available for $gymName", Toast.LENGTH_SHORT).show()
+        return
+    }
+    
+    try {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(websiteUrl))
+        Toast.makeText(context, "Opening $gymName website...", Toast.LENGTH_SHORT).show()
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        Log.e("MapsScreen", "Error opening website: ${e.message}")
+        Toast.makeText(context, "Unable to open website", Toast.LENGTH_SHORT).show()
+    }
+}
 
 @OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -140,6 +160,7 @@ fun MapsScreen(navController: NavController) {
                     GoogleMapView(
                         modifier = Modifier.matchParentSize(),
                         cameraPositionState = cameraPositionState,
+                        context = context,
                         onMapLoaded = {
                             Log.d("MapsScreen", "Map loaded successfully")
                             isMapLoaded = true
@@ -254,6 +275,7 @@ suspend fun getCurrentLocationSimple(context: Context): Location? {
 fun GoogleMapView(
     modifier: Modifier,
     cameraPositionState: CameraPositionState,
+    context: Context,
     onMapLoaded: () -> Unit,
 ) {
     var mapProperties by remember {
@@ -287,7 +309,12 @@ fun GoogleMapView(
             for (marker in favPlaceList) {
                 Marker(
                     state = MarkerState(position = LatLng(marker.lat, marker.lon)),
-                    title = marker.title
+                    title = marker.title,
+                    snippet = "Tap to visit website",
+                    onClick = { 
+                        openGymWebsite(context, marker.websiteUrl, marker.title)
+                        true // Consume the click event
+                    }
                 )
             }
 
