@@ -1,7 +1,7 @@
 package edu.unibo.tracker.commonItem
 
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -19,38 +19,47 @@ fun FabMaps(navController: NavController) {
             android.Manifest.permission.ACCESS_FINE_LOCATION,
         )
     )
+
+    // Track if we just requested permissions
+    var justRequestedPermissions by remember { mutableStateOf(false) }
+
+    // Navigate to maps when permissions are granted AND we just requested them
+    LaunchedEffect(locationPermissionsState.allPermissionsGranted, justRequestedPermissions) {
+        if (locationPermissionsState.allPermissionsGranted && justRequestedPermissions) {
+            justRequestedPermissions = false // Reset the flag
+            kotlinx.coroutines.delay(100) // Small delay for stability
+            navController.navigate("maps") {
+                navController.graph.startDestinationRoute?.let { route ->
+                    popUpTo(route) {
+                        saveState = true
+                    }
+                }
+                restoreState = true
+            }
+        }
+    }
+
     FloatingActionButton(
         onClick = {
             if (locationPermissionsState.allPermissionsGranted) {
+                // Permissions already granted, navigate immediately
                 navController.navigate("maps") {
                     navController.graph.startDestinationRoute?.let { route ->
                         popUpTo(route) {
                             saveState = true
                         }
                     }
-                    // Avoid multiple copies of the same destination when
-                    // reselecting the same item
-                    launchSingleTop = true
-                    // Restore state when reselecting a previously selected item
                     restoreState = true
                 }
             } else {
+                // Request permissions and set flag
+                justRequestedPermissions = true
                 locationPermissionsState.launchMultiplePermissionRequest()
-                if (locationPermissionsState.allPermissionsGranted) {
-                    navController.navigate("maps")
-                } else {
-                    navController.navigate("home")
-                }
-
             }
         },
-
         backgroundColor = MaterialTheme.colors.secondary,
         elevation = FloatingActionButtonDefaults.elevation(8.dp)
     ) {
         Icon(painterResource(id = R.drawable.ic_pin), "pin")
     }
 }
-
-
-

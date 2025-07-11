@@ -1,5 +1,6 @@
 package edu.unibo.tracker
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Bundle
@@ -12,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.rememberPermissionState
 import edu.unibo.tracker.home.bottomBar.BottomNavigationBar
 import edu.unibo.tracker.navigation.Navigation
 import edu.unibo.tracker.ui.theme.FitTrackerTheme
@@ -32,7 +34,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location : Location? ->
                 if (location != null) {

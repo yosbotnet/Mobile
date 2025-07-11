@@ -1,6 +1,7 @@
 package edu.unibo.tracker.profile
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,6 +27,7 @@ import com.google.accompanist.permissions.rememberPermissionState
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ProfileScreen(navController: NavController) {
