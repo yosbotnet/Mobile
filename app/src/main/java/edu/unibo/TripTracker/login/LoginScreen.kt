@@ -26,6 +26,7 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel = hil
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var hasError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
     var passwordVisualTransformation by remember {
         mutableStateOf<VisualTransformation>(
@@ -68,7 +69,16 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel = hil
                         fontWeight = FontWeight.ExtraBold,
                         textAlign = TextAlign.Center
                     ),
+                    color = MaterialTheme.colors.primary,
                     modifier = Modifier.padding(top = 8.dp)
+                )
+                Text(
+                    text = "Your fitness companion",
+                    style = MaterialTheme.typography.subtitle1.copy(
+                        textAlign = TextAlign.Center
+                    ),
+                    modifier = Modifier.padding(top = 16.dp),
+                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
                 )
 
             }
@@ -113,10 +123,11 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel = hil
                             imeAction = ImeAction.Next
                         ),
                         label = { Text(text = "Username") },
-                        placeholder = { Text("Username") },
+                        placeholder = { Text("Enter your username") },
                         onValueChange = {
                             email = it
                             user = email
+                            hasError = false
                         },
                         interactionSource = emailInteractionState,
                     )
@@ -130,13 +141,23 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel = hil
                             imeAction = ImeAction.Done
                         ),
                         label = { Text("Password") },
-                        placeholder = { Text(text = "Password") },
+                        placeholder = { Text(text = "Enter your password") },
                         onValueChange = {
                             password = it
+                            hasError = false
                         },
                         interactionSource = passwordInteractionState,
                         visualTransformation = passwordVisualTransformation,
                     )
+                    if (hasError && errorMessage.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = errorMessage,
+                            color = MaterialTheme.colors.error,
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                    }
                 }
             }
 
@@ -145,15 +166,28 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel = hil
             var loading by remember { mutableStateOf(false) }
             Button(
                 onClick = {
-                    coroutineScope.launch {
-                        userViewModel.getUserByEmail(email) { user ->
-                            if (user != null && user.passwordHash == password) {
-                                hasError = false
-                                loading = true
-                                navController.navigate("home")
-                            } else {
-                                hasError = true
-                                loading = false
+                    when {
+                        email.isBlank() -> {
+                            hasError = true
+                            errorMessage = "Username is required"
+                        }
+                        password.isBlank() -> {
+                            hasError = true
+                            errorMessage = "Password is required"
+                        }
+                        else -> {
+                            loading = true
+                            coroutineScope.launch {
+                                userViewModel.getUserByEmail(email) { user ->
+                                    if (user != null && user.passwordHash == password) {
+                                        hasError = false
+                                        navController.navigate("home")
+                                    } else {
+                                        hasError = true
+                                        errorMessage = "Invalid username or password"
+                                        loading = false
+                                    }
+                                }
                             }
                         }
                     }

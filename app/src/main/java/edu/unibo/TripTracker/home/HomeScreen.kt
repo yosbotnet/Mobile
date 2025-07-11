@@ -41,24 +41,35 @@ fun HomeScreen(workoutViewModel: WorkoutViewModel, trackViewModel: TrackViewMode
             ) {
                 item { Spacer(modifier = Modifier.height(18.dp)) }
                 item {
-                    Surface(
+                    Card(
                         modifier = Modifier
                             .padding(6.dp)
-                            .fillMaxWidth(1f), shape = MaterialTheme.shapes.medium
+                            .fillMaxWidth(1f),
+                        shape = MaterialTheme.shapes.medium,
+                        elevation = 4.dp
                     ) {
                         Column(
                             modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth(0.9f),
+                                .padding(16.dp)
+                                .fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-
                             Text(
-                                "Welcome $user",
+                                "Welcome back, $user!",
                                 fontSize = 28.sp,
-                                style = MaterialTheme.typography.h4,
-                                textAlign = TextAlign.Left,
-                                modifier = Modifier.padding(4.dp)
+                                style = MaterialTheme.typography.h4.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colors.primary,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                            Text(
+                                "Ready to crush your fitness goals today?",
+                                style = MaterialTheme.typography.subtitle1,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colors.onSurface.copy(alpha = 0.8f),
+                                modifier = Modifier.padding(bottom = 12.dp)
                             )
                             Text(
                                 "With FitTracker you can manage all your favorite workout routines and GPS routes, " +
@@ -79,51 +90,52 @@ fun HomeScreen(workoutViewModel: WorkoutViewModel, trackViewModel: TrackViewMode
                 item {
                     Text(
                         text = "Fitness Overview",
-                        style = MaterialTheme.typography.h5
+                        style = MaterialTheme.typography.h5.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colors.primary,
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
 
                 item {
                     LazyRow(modifier = Modifier.padding(start = 8.dp)) {
                         item {
-                            Surface(
-                                color = MaterialTheme.colors.background,
+                            Card(
                                 modifier = Modifier
                                     .padding(top = 12.dp, bottom = 12.dp)
-                                    .fillMaxWidth(0.8f)
-                                    .border(
-                                        2.dp,
-                                        MaterialTheme.colors.surface,
-                                        shape = MaterialTheme.shapes.medium
-                                    ),
+                                    .fillMaxWidth(0.8f),
                                 shape = MaterialTheme.shapes.medium,
-                                elevation = 4.dp,
+                                elevation = 6.dp,
                             ) {
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(12.dp)
+                                        .padding(16.dp)
                                 ) {
                                     Text(
-                                        "Upcoming Workout",
-                                        style = MaterialTheme.typography.subtitle1,
-                                        fontWeight = FontWeight.SemiBold
+                                        "🏋️ Upcoming Workout",
+                                        style = MaterialTheme.typography.subtitle1.copy(
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        color = MaterialTheme.colors.primary,
+                                        modifier = Modifier.padding(bottom = 8.dp)
                                     )
                                     var upcomingWorkout = getUpcomingWorkout(workoutViewModel)
                                     var workoutName = upcomingWorkout[0]
                                     var workoutDate = upcomingWorkout[1]
                                     Text(
                                         "Workout: $workoutName",
-                                        style = MaterialTheme.typography.body1
+                                        style = MaterialTheme.typography.body1.copy(
+                                            fontWeight = FontWeight.Medium
+                                        )
                                     )
                                     Text(
                                         "When: $workoutDate",
-                                        style = MaterialTheme.typography.body1
+                                        style = MaterialTheme.typography.body2,
+                                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
                                     )
-
                                 }
-
-
                             }
 
                         }
@@ -131,42 +143,41 @@ fun HomeScreen(workoutViewModel: WorkoutViewModel, trackViewModel: TrackViewMode
                             Spacer(modifier = Modifier.width(8.dp))
                         }
                         item {
-                            Surface(
-                                color = MaterialTheme.colors.background,
+                            Card(
                                 modifier = Modifier
                                     .padding(top = 12.dp, bottom = 12.dp)
-                                    .fillMaxWidth(0.8f)
-                                    .border(
-                                        2.dp,
-                                        MaterialTheme.colors.surface,
-                                        shape = MaterialTheme.shapes.medium
-                                    ),
+                                    .fillMaxWidth(0.8f),
                                 shape = MaterialTheme.shapes.medium,
-                                elevation = 4.dp
+                                elevation = 6.dp
                             ) {
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(12.dp),
+                                        .padding(16.dp),
 
                                 ) {
                                     Text(
-                                        "Weekly Progress",
-                                        style = MaterialTheme.typography.subtitle1,
-                                        fontWeight = FontWeight.SemiBold
+                                        "📊 Weekly Progress",
+                                        style = MaterialTheme.typography.subtitle1.copy(
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        color = MaterialTheme.colors.primary,
+                                        modifier = Modifier.padding(bottom = 8.dp)
                                     )
                                     var weeklyProgress = getWeeklyProgress(workoutViewModel)
                                     var goal = weeklyProgress[0]
                                     var progress = weeklyProgress[1]
                                     Text(
                                         "Goal: $goal",
-                                        style = MaterialTheme.typography.body1
+                                        style = MaterialTheme.typography.body1.copy(
+                                            fontWeight = FontWeight.Medium
+                                        )
                                     )
                                     Text(
                                         "Progress: $progress",
-                                        style = MaterialTheme.typography.body1
+                                        style = MaterialTheme.typography.body2,
+                                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
                                     )
-
                                 }
                             }
                         }
@@ -175,37 +186,40 @@ fun HomeScreen(workoutViewModel: WorkoutViewModel, trackViewModel: TrackViewMode
                         }
 
                         item {
-                            Surface(
-                                color = MaterialTheme.colors.background,
+                            Card(
                                 modifier = Modifier
                                     .padding(top = 12.dp, bottom = 12.dp)
-                                    .fillMaxWidth(0.8f)
-                                    .border(
-                                        2.dp,
-                                        MaterialTheme.colors.surface,
-                                        shape = MaterialTheme.shapes.medium
-                                    ),
+                                    .fillMaxWidth(0.8f),
                                 shape = MaterialTheme.shapes.medium,
-                                elevation = 4.dp
+                                elevation = 6.dp
                             ) {
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(12.dp)
+                                        .padding(16.dp)
                                 ) {
                                     Text(
-                                        "Best Workout",
-                                        style = MaterialTheme.typography.subtitle1,
-                                        fontWeight = FontWeight.SemiBold
+                                        "🏆 Best Workout",
+                                        style = MaterialTheme.typography.subtitle1.copy(
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        color = MaterialTheme.colors.primary,
+                                        modifier = Modifier.padding(bottom = 8.dp)
                                     )
                                     var bestWorkout = getBestWorkout(workoutViewModel)
                                     var bestWorkoutName = bestWorkout[0]
                                     var bestCalories = bestWorkout[1]
                                     Text(
                                         "Workout: $bestWorkoutName",
-                                        style = MaterialTheme.typography.body1
+                                        style = MaterialTheme.typography.body1.copy(
+                                            fontWeight = FontWeight.Medium
+                                        )
                                     )
-                                    Text("Calories: $bestCalories cal")
+                                    Text(
+                                        "Calories: $bestCalories cal",
+                                        style = MaterialTheme.typography.body2,
+                                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                                    )
                                 }
                             }
                         }
@@ -217,7 +231,16 @@ fun HomeScreen(workoutViewModel: WorkoutViewModel, trackViewModel: TrackViewMode
                 }
                 item { Spacer(modifier = Modifier.height(12.dp)) }
                 //--------------------fitness news section---------------------------------------//
-                item { Text(text = "Fitness News", style = MaterialTheme.typography.h5) }
+                item { 
+                    Text(
+                        text = "Fitness News",
+                        style = MaterialTheme.typography.h5.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = MaterialTheme.colors.primary,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    ) 
+                }
                 item { Spacer(modifier = Modifier.height(12.dp)) }
                 item { SwipeCardAnimation() }
 
