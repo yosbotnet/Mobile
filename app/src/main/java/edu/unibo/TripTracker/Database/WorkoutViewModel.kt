@@ -1,13 +1,14 @@
 package edu.unibo.tracker.Database
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
@@ -17,9 +18,10 @@ import javax.inject.Inject
 class WorkoutViewModel
 @Inject
 constructor(
-    workoutDAO: WorkoutDAO
+    private val workoutDAO: WorkoutDAO
 ) : ViewModel() {
-     val allWorkout = mutableStateListOf<Workout>()
+    private val _allWorkouts = MutableStateFlow<List<Workout>>(emptyList())
+    val allWorkouts = _allWorkouts.asStateFlow()
 
     private val repository: WorkoutRepository = WorkoutRepository(workoutDAO)
 
@@ -44,8 +46,9 @@ constructor(
                         addWorkout(event.workout)
                     }
                     is WorkoutEvent.GetAllWorkout -> {
-                        allWorkout.clear()
-                        allWorkout.addAll(repository.getAllWorkouts())
+                        repository.getAllWorkouts().onEach { 
+                            _allWorkouts.value = it
+                        }.launchIn(viewModelScope)
                     }
                     is WorkoutEvent.GetUpcomingWorkout -> {
                         getUpcomingWorkout()
@@ -67,20 +70,19 @@ constructor(
     }
     private suspend fun addWorkout(workout: Workout) {
         repository.addWorkout(workout)
-        allWorkout.add(workout)
     }
     private suspend fun getUpcomingWorkout() {
-        upcomingWorkout = repository.getAllWorkouts().firstOrNull()?.workoutName
+        upcomingWorkout = _allWorkouts.value.firstOrNull()?.workoutName
         upcomingDate = "Today"
     }
     private suspend fun getWeeklyProgress(){
-        val totalWorkouts = repository.getAllWorkouts().size
+        val totalWorkouts = _allWorkouts.value.size
         weeklyGoal = "7 workouts"
         weeklyProgress = "$totalWorkouts/7"
     }
 
     private suspend fun getBestWorkout(){
-        val highestCalories = repository.getAllWorkouts().maxByOrNull { it.calories?.toIntOrNull() ?: 0 }
+        val highestCalories = _allWorkouts.value.maxByOrNull { it.calories?.toIntOrNull() ?: 0 }
         bestWorkout = highestCalories?.calories
         bestWorkoutName = highestCalories?.workoutName
     }
@@ -88,11 +90,5 @@ constructor(
     private suspend fun toggleFavorite(workout: Workout) {
         val updatedWorkout = workout.copy(isFavorite = !workout.isFavorite)
         repository.updateWorkout(updatedWorkout)
-        
-        // Update local list
-        val index = allWorkout.indexOfFirst { it.id == workout.id }
-        if (index != -1) {
-            allWorkout[index] = updatedWorkout
-        }
     }
 }

@@ -24,7 +24,7 @@ import edu.unibo.tracker.workout.Card.CardAddWorkout
 fun WorkoutScreen(
     navController: NavController, workoutViewModel: WorkoutViewModel
 ) {
-    val workouts = workoutViewModel.allWorkout
+    val workouts by workoutViewModel.allWorkouts.collectAsState()
     var searchText by remember { mutableStateOf("") }
     var showFavoritesOnly by remember { mutableStateOf(false) }
     
