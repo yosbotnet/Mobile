@@ -13,6 +13,7 @@ import edu.unibo.tracker.home.HomeScreen
 import edu.unibo.tracker.login.LoginScreen
 import edu.unibo.tracker.login.RegistrationScreen
 import edu.unibo.tracker.maps.MapsScreen
+import edu.unibo.tracker.profile.EditProfileScreen
 import edu.unibo.tracker.profile.ProfileScreen
 
 import edu.unibo.tracker.track.TrackScreen
@@ -50,6 +51,9 @@ fun Navigation(navController: NavHostController) {
         }
         composable(NavigationItem.Profile.route){
             ProfileScreen(navController)
+        }
+        composable("edit_profile"){
+            EditProfileScreen(navController)
         }
     }
 }

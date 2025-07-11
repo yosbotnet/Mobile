@@ -6,6 +6,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -121,20 +126,32 @@ fun HomeScreen(workoutViewModel: WorkoutViewModel, trackViewModel: TrackViewMode
                                         color = MaterialTheme.colors.primary,
                                         modifier = Modifier.padding(bottom = 8.dp)
                                     )
-                                    var upcomingWorkout = getUpcomingWorkout(workoutViewModel)
-                                    var workoutName = upcomingWorkout[0]
-                                    var workoutDate = upcomingWorkout[1]
-                                    Text(
-                                        "Workout: $workoutName",
-                                        style = MaterialTheme.typography.body1.copy(
-                                            fontWeight = FontWeight.Medium
+                                    var upcomingWorkout by remember { mutableStateOf<List<String?>>(emptyList()) }
+                                    LaunchedEffect(key1 = workoutViewModel) {
+                                        upcomingWorkout = getUpcomingWorkout(workoutViewModel)
+                                    }
+                                    var workoutName = upcomingWorkout.getOrNull(0)
+                                    var workoutDate = upcomingWorkout.getOrNull(1)
+                                    if (workoutName != null) {
+                                        Text(
+                                            "Workout: $workoutName",
+                                            style = MaterialTheme.typography.body1.copy(
+                                                fontWeight = FontWeight.Medium
+                                            )
                                         )
-                                    )
-                                    Text(
-                                        "When: $workoutDate",
-                                        style = MaterialTheme.typography.body2,
-                                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
-                                    )
+                                        Text(
+                                            "When: $workoutDate",
+                                            style = MaterialTheme.typography.body2,
+                                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                                        )
+                                    } else {
+                                        Text(
+                                            "You haven't added any workouts yet.",
+                                            style = MaterialTheme.typography.body1.copy(
+                                                fontWeight = FontWeight.Medium
+                                            )
+                                        )
+                                    }
                                 }
                             }
 
@@ -164,20 +181,32 @@ fun HomeScreen(workoutViewModel: WorkoutViewModel, trackViewModel: TrackViewMode
                                         color = MaterialTheme.colors.primary,
                                         modifier = Modifier.padding(bottom = 8.dp)
                                     )
-                                    var weeklyProgress = getWeeklyProgress(workoutViewModel)
-                                    var goal = weeklyProgress[0]
-                                    var progress = weeklyProgress[1]
-                                    Text(
-                                        "Goal: $goal",
-                                        style = MaterialTheme.typography.body1.copy(
-                                            fontWeight = FontWeight.Medium
+                                    var weeklyProgress by remember { mutableStateOf<List<String?>>(emptyList()) }
+                                    LaunchedEffect(key1 = workoutViewModel) {
+                                        weeklyProgress = getWeeklyProgress(workoutViewModel)
+                                    }
+                                    var goal = weeklyProgress.getOrNull(0)
+                                    var progress = weeklyProgress.getOrNull(1)
+                                    if (goal != null) {
+                                        Text(
+                                            "Goal: $goal",
+                                            style = MaterialTheme.typography.body1.copy(
+                                                fontWeight = FontWeight.Medium
+                                            )
                                         )
-                                    )
-                                    Text(
-                                        "Progress: $progress",
-                                        style = MaterialTheme.typography.body2,
-                                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
-                                    )
+                                        Text(
+                                            "Progress: $progress",
+                                            style = MaterialTheme.typography.body2,
+                                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                                        )
+                                    } else {
+                                        Text(
+                                            "No weekly progress yet.",
+                                            style = MaterialTheme.typography.body1.copy(
+                                                fontWeight = FontWeight.Medium
+                                            )
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -206,20 +235,32 @@ fun HomeScreen(workoutViewModel: WorkoutViewModel, trackViewModel: TrackViewMode
                                         color = MaterialTheme.colors.primary,
                                         modifier = Modifier.padding(bottom = 8.dp)
                                     )
-                                    var bestWorkout = getBestWorkout(workoutViewModel)
-                                    var bestWorkoutName = bestWorkout[0]
-                                    var bestCalories = bestWorkout[1]
-                                    Text(
-                                        "Workout: $bestWorkoutName",
-                                        style = MaterialTheme.typography.body1.copy(
-                                            fontWeight = FontWeight.Medium
+                                    var bestWorkout by remember { mutableStateOf<List<String?>>(emptyList()) }
+                                    LaunchedEffect(key1 = workoutViewModel) {
+                                        bestWorkout = getBestWorkout(workoutViewModel)
+                                    }
+                                    var bestWorkoutName = bestWorkout.getOrNull(0)
+                                    var bestCalories = bestWorkout.getOrNull(1)
+                                    if (bestWorkoutName != null) {
+                                        Text(
+                                            "Workout: $bestWorkoutName",
+                                            style = MaterialTheme.typography.body1.copy(
+                                                fontWeight = FontWeight.Medium
+                                            )
                                         )
-                                    )
-                                    Text(
-                                        "Calories: $bestCalories cal",
-                                        style = MaterialTheme.typography.body2,
-                                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
-                                    )
+                                        Text(
+                                            "Calories: $bestCalories cal",
+                                            style = MaterialTheme.typography.body2,
+                                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                                        )
+                                    } else {
+                                        Text(
+                                            "No best workout yet.",
+                                            style = MaterialTheme.typography.body1.copy(
+                                                fontWeight = FontWeight.Medium
+                                            )
+                                        )
+                                    }
                                 }
                             }
                         }

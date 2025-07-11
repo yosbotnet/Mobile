@@ -19,12 +19,15 @@ import androidx.navigation.NavController
 import edu.unibo.tracker.Database.User
 import edu.unibo.tracker.Database.UserViewModel
 import kotlinx.coroutines.launch
+import java.util.Date
 
 @Composable
 fun RegistrationScreen(navController: NavController, userViewModel: UserViewModel = hiltViewModel()) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var sex by remember { mutableStateOf("") }
+    var address by remember { mutableStateOf("") }
     var hasError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
@@ -79,7 +82,7 @@ fun RegistrationScreen(navController: NavController, userViewModel: UserViewMode
             Card(
                 modifier = Modifier
                     .fillMaxWidth(1f)
-                    .height(400.dp),
+                    .height(550.dp),
                 elevation = 6.dp,
                 shape = MaterialTheme.shapes.small,
             ) {
@@ -143,7 +146,7 @@ fun RegistrationScreen(navController: NavController, userViewModel: UserViewMode
                         modifier = Modifier.fillMaxWidth(0.8f),
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Password,
-                            imeAction = ImeAction.Done
+                            imeAction = ImeAction.Next
                         ),
                         label = { Text("Confirm Password") },
                         placeholder = { Text(text = "Confirm your password") },
@@ -153,6 +156,40 @@ fun RegistrationScreen(navController: NavController, userViewModel: UserViewMode
                         },
                         interactionSource = confirmPasswordInteractionState,
                         visualTransformation = passwordVisualTransformation,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = sex,
+                        maxLines = 1,
+                        isError = hasError && sex.isBlank(),
+                        modifier = Modifier.fillMaxWidth(0.8f),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Next
+                        ),
+                        label = { Text("Sex") },
+                        placeholder = { Text("Enter your sex") },
+                        onValueChange = {
+                            sex = it
+                            hasError = false
+                        },
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = address,
+                        maxLines = 1,
+                        isError = hasError && address.isBlank(),
+                        modifier = Modifier.fillMaxWidth(0.8f),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Done
+                        ),
+                        label = { Text("Address") },
+                        placeholder = { Text("Enter your address") },
+                        onValueChange = {
+                            address = it
+                            hasError = false
+                        },
                     )
                     if (hasError && errorMessage.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(8.dp))
@@ -191,7 +228,13 @@ fun RegistrationScreen(navController: NavController, userViewModel: UserViewMode
                             hasError = false
                             loading = true
                             coroutineScope.launch {
-                                val user = User(email = email, passwordHash = password)
+                                val user = User(
+                                    email = email, 
+                                    passwordHash = password, 
+                                    sex = sex, 
+                                    address = address,
+                                    registrationDate = Date()
+                                )
                                 userViewModel.insert(user)
                                 navController.navigate("login")
                             }

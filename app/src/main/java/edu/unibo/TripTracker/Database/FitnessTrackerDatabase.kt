@@ -2,8 +2,10 @@ package edu.unibo.tracker.Database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
-@Database(entities = [Workout::class, Track::class, User::class], version = 3, exportSchema = false)
+@Database(entities = [Workout::class, Track::class, User::class], version = 4, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class FitnessTrackerDatabase :RoomDatabase() {
 
     abstract fun workoutDao(): WorkoutDAO

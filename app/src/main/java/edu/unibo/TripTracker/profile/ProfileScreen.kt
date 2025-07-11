@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,17 +35,22 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.text.font.FontWeight
 import edu.unibo.tracker.profile.ProfileImageManager
+import edu.unibo.tracker.Database.UserViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ProfileScreen(
     navController: NavController, 
-    themeViewModel: ThemeViewModel = hiltViewModel()
+    themeViewModel: ThemeViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var selectedImageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
     val currentThemeMode by themeViewModel.themeMode.collectAsState()
+    val userState by userViewModel.getUserByEmail(user!!).collectAsState(initial = null)
     
     // Create ProfileImageManager instance
     val profileImageManager = remember { ProfileImageManager(context) }
@@ -119,6 +125,35 @@ fun ProfileScreen(
             
             item {
                 Text("Welcome, $user!", style = MaterialTheme.typography.h5)
+            }
+
+            // User details
+            item {
+                userState?.let {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        elevation = 4.dp
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                        ) {
+                            ProfileDetailItem("Email", it.email)
+                            ProfileDetailItem("Sex", it.sex ?: "Not specified")
+                            ProfileDetailItem("Address", it.address ?: "Not specified")
+                            ProfileDetailItem("Registration Date", 
+                                it.registrationDate?.let { 
+                                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it)
+                                } ?: "Not available")
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(
+                                onClick = { navController.navigate("edit_profile") },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Edit Profile")
+                            }
+                        }
+                    }
+                }
             }
             
             // Profile Picture Section
@@ -241,5 +276,26 @@ fun ProfileScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ProfileDetailItem(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.weight(0.4f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.weight(0.6f)
+        )
     }
 }

@@ -178,7 +178,7 @@ fun LoginScreen(navController: NavController, userViewModel: UserViewModel = hil
                         else -> {
                             loading = true
                             coroutineScope.launch {
-                                userViewModel.getUserByEmail(email) { user ->
+                                userViewModel.getUserByEmail(email).collect { user ->
                                     if (user != null && user.passwordHash == password) {
                                         hasError = false
                                         navController.navigate("home")

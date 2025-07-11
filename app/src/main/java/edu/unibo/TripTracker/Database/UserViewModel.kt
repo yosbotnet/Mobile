@@ -3,17 +3,20 @@ package edu.unibo.tracker.Database
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class UserViewModel @Inject constructor(private val userRepository: UserRepository) : ViewModel() {
+class UserViewModel @Inject constructor(private val repository: UserRepository) : ViewModel() {
 
     fun insert(user: User) = viewModelScope.launch {
-        userRepository.insert(user)
+        repository.insert(user)
     }
 
-    fun getUserByEmail(email: String, onResult: (User?) -> Unit) = viewModelScope.launch {
-        onResult(userRepository.getUserByEmail(email))
+    fun getUserByEmail(email: String): Flow<User?> = repository.getUserByEmail(email)
+
+    fun updateUser(user: User) = viewModelScope.launch {
+        repository.updateUser(user)
     }
 }
